@@ -1,0 +1,85 @@
+version: '3.2'
+
+networks:
+    backend-network:
+        driver: bridge
+    frontend-network:
+        driver: bridge
+
+volumes:
+    home-dir:
+
+services:
+    &app-service app: &app-service-template
+        build:
+            context: ./docker/app
+            dockerfile: Dockerfile
+        user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
+        volumes:
+            - /etc/passwd:/etc/passwd:ro
+            - /etc/group:/etc/group:ro
+            - ./:/app:rw
+            - home-dir:/home/user
+        hostname: *app-service
+        environment:
+            DB_CONNECTION: mysql
+            DB_HOST: 172.17.0.1 #ip адрес хост машины (стандартный для всех контейнеров)
+            DB_PORT: 3306
+            DB_DATABASE: hr_php_test
+            DB_USERNAME: root
+            DB_PASSWORD: root
+            SCHEDULE_PERIOD: 60
+            FPM_PORT: &php-fpm-port 9000
+            FPM_USER: "${USER_ID:-1000}"
+            FPM_GROUP: "${GROUP_ID:-1000}"
+#                  APP_ENV: local
+#                  APP_DEBUG: 'true'
+            APP_BASE_URL: &app-base-url hr-php-test.loc
+            APP_URL: http://hr-php-test.loc
+            HOME: /home/user
+        command: keep-alive.sh
+        networks:
+            - backend-network
+
+    &queue-service queue:
+        <<: *app-service-template
+        restart: always
+        hostname: *queue-service
+        command: php /app/artisan queue:work
+
+    &scheduler-service scheduler:
+        <<: *app-service-template
+        restart: always
+        hostname: *scheduler-service
+        command: scheduler.sh "php /app/artisan schedule:run"
+
+    &php-fpm-service php-fpm:
+        <<: *app-service-template
+        user: 'root:root'
+        restart: always
+        hostname: *php-fpm-service
+        ports: [*php-fpm-port]
+        entrypoint: /fpm-entrypoint.sh
+        command: php-fpm --nodaemonize -d "opcache.enable=0" -d "display_startup_errors=On" -d "display_errors=On" -d "error_reporting=E_ALL"
+        networks:
+            - backend-network
+            - frontend-network
+
+    nginx:
+        build:
+            context: ./docker/nginx
+            dockerfile: Dockerfile
+        restart: always
+        working_dir: /usr/share/nginx/html
+        environment:
+            FPM_HOST: *php-fpm-service
+            FPM_PORT: *php-fpm-port
+            APP_BASE_URL: *app-base-url
+            ROOT_DIR: '/app/public' # App path must equals with php-fpm container path
+        volumes:
+            - ./:/app:ro
+        ports: ['80:80']
+        depends_on:
+            - *php-fpm-service
+        networks:
+            - frontend-network
