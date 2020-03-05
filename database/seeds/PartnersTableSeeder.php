@@ -1,8 +1,7 @@
 <?php
 
+use App\Models\Partner;
 use Illuminate\Database\Seeder;
-
-use App\Partner;
 
 class PartnersTableSeeder extends Seeder
 {
