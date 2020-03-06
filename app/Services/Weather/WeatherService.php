@@ -28,12 +28,11 @@ class WeatherService
     }
 
     /**
-     * @param string $cityName
-     * @return Weather
+     * @param City $city
+     * @return Weather|mixed
      */
-    public function getWeatherByCity(string $cityName)
+    public function getWeatherByCity(City $city)
     {
-        $city = City::where('name', 'like', $cityName)->with('weather')->firstOrFail();
 
         $weather = data_get($city, 'weather');
 
