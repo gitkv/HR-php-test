@@ -5,13 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="stylesheet" type="text/css" href="{{ asset('/css/app.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ asset('/css/style.css') }}"/>
-    <script src="{{ asset('/js/app.js') }}" defer></script>
-    <script src="{{ asset('/js/script.js') }}" defer></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+
 
     <title>Тестовое задание</title>
 </head>
@@ -39,14 +38,14 @@
                     <a href="{{route('orders.index')}}">Заказы</a>
                 </li>
                 <li class="@linkIsActive('products')">
-                    <a href="#">Продукты</a>
+                    <a href="{{route('products.index')}}">Продукты</a>
                 </li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
 
-<div class="container">
+<div class="container" id="app">
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -60,5 +59,9 @@
     @yield('content')
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" defer></script>
+<script src="{{ asset('/js/app.js') }}" defer></script>
+<script src="{{ asset('/js/script.js') }}" defer></script>
 </body>
 </html>

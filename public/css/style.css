@@ -1,4 +1,13 @@
-body{
+body {
     min-height: 2000px;
     padding-top: 70px;
+}
+
+.table-col__price {
+    max-width: 25%;
+    width: 25%;
+}
+
+.editing {
+    cursor: pointer;
 }
