@@ -21,7 +21,6 @@ class CreateCityWeatherTable extends Migration
             $table->double('feels_like');
             $table->double('temp_water')->default(0);
             $table->double('wind_speed');
-            $table->string('meta')->nullable();
             $table->timestamps();
             $table->foreign('city_id')->references('id')->on('cities');
         });

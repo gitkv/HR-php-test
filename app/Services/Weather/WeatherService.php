@@ -7,10 +7,16 @@ namespace App\Services\Weather;
 use App\Models\City;
 use App\Models\Weather;
 use App\Services\Weather\Clients\WeatherClient;
+use Carbon\Carbon;
 
 class WeatherService
 {
     private $weatherClient;
+
+    /**
+     * время кеширования погоды в часах
+     */
+    const CACHED_TIME = 3;
 
     /**
      * WeatherService constructor.
@@ -27,9 +33,22 @@ class WeatherService
      */
     public function getWeatherByCity(string $cityName)
     {
-        $city = City::where('name', 'ilike', $cityName)->firstOrFail();
+        $city = City::where('name', 'like', $cityName)->with('weather')->firstOrFail();
 
-        return $this->weatherClient->getWeatherByCity($city);
+        $weather = data_get($city, 'weather');
+
+        if (!$weather || Carbon::now()->diffInHours($weather->updated_at) > self::CACHED_TIME) {
+            $weatherData = $this->weatherClient->getWeatherByCity($city);
+            if (!$weather) {
+                $weather = new Weather(array_merge($weatherData, ['city_id' => $city->id]));
+            }
+            else {
+                $weather->fill($weatherData);
+            }
+            $weather->save();
+        }
+
+        return $weather;
     }
 
 }

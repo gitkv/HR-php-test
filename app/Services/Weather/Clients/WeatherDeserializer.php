@@ -4,13 +4,11 @@
 namespace App\Services\Weather\Clients;
 
 
-use App\Models\Weather;
-
 interface WeatherDeserializer
 {
 
     /**
-     * @return Weather
+     * @return array
      */
     public function deserialize();
 
