@@ -10,6 +10,7 @@
 	"require": {
 		"php": ">=7.0.0",
 		"ext-json": "*",
+		"bensampo/laravel-enum": "^1.33",
 		"fideloper/proxy": "~3.3",
 		"fzaninotto/faker": "^1.7",
 		"guzzlehttp/guzzle": "^6.5",

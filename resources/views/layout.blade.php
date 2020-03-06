@@ -36,7 +36,7 @@
                     <a href="{{route('weather', ['cityName' => "брянск"])}}">Погода в Брянске</a>
                 </li>
                 <li class="@linkIsActive('orders')">
-                    <a href="#">Заказы</a>
+                    <a href="{{route('orders.index')}}">Заказы</a>
                 </li>
                 <li class="@linkIsActive('products')">
                     <a href="#">Продукты</a>
@@ -47,7 +47,18 @@
 </nav>
 
 <div class="container">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     @yield('content')
 </div>
+
 </body>
 </html>

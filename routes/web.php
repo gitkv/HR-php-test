@@ -17,4 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/weather/{cityName}', 'WeatherController@getWeatherByCity')->name('weather');
+Route::get('weather/{cityName}', 'WeatherController@getWeatherByCity')->name('weather');
+
+Route::resource('orders', 'OrderController', ['only'=>['index', 'edit', 'update']]);
+
+//Route::get('products', 'ProductController@index')->name('products');
