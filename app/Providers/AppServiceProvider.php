@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Order;
+use App\Observers\OrderObserver;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
@@ -17,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('linkIsActive', function ($routeName) {
             return "<?php echo request()->route()->getName() == $routeName ? 'active' : null; ?>";
         });
+
+        Order::observe(OrderObserver::class);
     }
 
     /**

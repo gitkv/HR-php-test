@@ -22,6 +22,11 @@ class Order extends Model
         return $this->hasMany(OrderProduct::class);
     }
 
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'order_products');
+    }
+
     public function getSum()
     {
         return $this->orderProducts()->get()->sum(function ($product) {
