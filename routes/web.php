@@ -19,6 +19,14 @@ Route::get('/', function () {
 
 Route::get('weather/{cityName}', 'WeatherController@getWeatherByCity')->name('weather');
 
-Route::resource('orders', 'OrderController', ['only' => ['index', 'edit', 'update']]);
+Route::get('orders/index/past', 'OrderController@indexPast')->name('orders-past');
+
+Route::get('orders/index/current', 'OrderController@indexCurrent')->name('orders-current');
+
+Route::get('orders/index/new', 'OrderController@indexNew')->name('orders-new');
+
+Route::get('orders/index/completed', 'OrderController@indexCompleted')->name('orders-completed');
+
+Route::resource('orders', 'OrderController', ['only' => ['edit', 'update']]);
 
 Route::resource('products', 'ProductController', ['only' => ['index']]);

@@ -11,3 +11,7 @@ body {
 .editing {
     cursor: pointer;
 }
+
+.table tr th {
+    border-top: none !important;
+}

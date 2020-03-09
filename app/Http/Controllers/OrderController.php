@@ -7,6 +7,8 @@ use App\Http\Requests\OrderUpdateRequest;
 use App\Models\Order;
 use App\Models\Partner;
 use App\Services\OrderService;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
@@ -28,16 +30,78 @@ class OrderController extends Controller
     }
 
     /**
+     * @param $orders
+     * @return View
+     */
+    protected function index(Collection $orders)
+    {
+        $orders->load('partner', 'orderProducts');
+        $orderStatuses = OrderStatus::toSelectArray();
+
+        return view('orders.index', compact('orders', 'orderStatuses'));
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return View
      */
-    public function index()
+    public function indexPast()
     {
-        $orders = Order::orderBy('id', 'asc')->with('partner', 'orderProducts')->paginate(config('app.paginate_size'));
-        $orderStatuses = OrderStatus::toSelectArray();
+        $orders = Order::orderBy('delivery_dt', 'desc')
+            ->whereDate('delivery_dt', '>', Carbon::now())
+            ->where('status', OrderStatus::SUCCESS)
+            ->limit(50)
+            ->get();
 
-        return view('orders.index', compact('orders', 'orderStatuses'));
+        return $this->index($orders);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return View
+     */
+    public function indexCurrent()
+    {
+        $orders = Order::orderBy('delivery_dt', 'asc')
+            ->whereDate('delivery_dt', '>', Carbon::now()->subHours(24))
+            ->where('status', OrderStatus::SUCCESS)
+            ->get();
+
+        return $this->index($orders);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return View
+     */
+    public function indexNew()
+    {
+        $orders = Order::orderBy('delivery_dt', 'asc')
+            ->whereDate('delivery_dt', '>', Carbon::now())
+            ->where('status', OrderStatus::NEW)
+            ->limit(50)
+            ->get();
+
+        return $this->index($orders);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return View
+     */
+    public function indexCompleted()
+    {
+        $orders = Order::orderBy('delivery_dt', 'asc')
+            ->whereDate('delivery_dt', Carbon::today())
+            ->where('status', OrderStatus::FINISH)
+            ->limit(50)
+            ->get();
+
+        return $this->index($orders);
     }
 
     /**

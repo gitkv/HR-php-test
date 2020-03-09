@@ -20,8 +20,14 @@
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
+            <button
+                    type="button"
+                    class="navbar-toggle collapsed"
+                    data-toggle="collapse"
+                    data-target="#navbar"
+                    aria-expanded="false"
+                    aria-controls="navbar"
+            >
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -35,9 +41,9 @@
                     <a href="{{route('weather', ['cityName' => "брянск"])}}">Погода в Брянске</a>
                 </li>
                 <li class="@linkIsActive('orders')">
-                    <a href="{{route('orders.index')}}">Заказы</a>
+                    <a href="{{route('orders-current')}}">Заказы</a>
                 </li>
-                <li class="@linkIsActive('products')">
+                <li class="@linkIsActive('products.index')">
                     <a href="{{route('products.index')}}">Продукты</a>
                 </li>
             </ul>
