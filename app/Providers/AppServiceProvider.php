@@ -20,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
             return "<?php echo request()->route()->getName() == $routeName ? 'active' : null; ?>";
         });
 
+
+        Blade::directive('orderLabel', function ($orderStatus) {
+            return '<span class="label label-default">{{\App\Enums\OrderStatus::getDescription(' . $orderStatus . ')}}</span>';
+        });
+
         Order::observe(OrderObserver::class);
     }
 

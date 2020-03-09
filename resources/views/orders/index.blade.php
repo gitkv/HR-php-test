@@ -46,17 +46,7 @@
                                 @endforeach
                             </ul>
                         </td>
-                        <td>
-                            @if($order->status === \App\Enums\OrderStatus::NEW)
-                                <span class="label label-warning">{{\App\Enums\OrderStatus::getDescription($order->status)}}</span>
-                            @elseif($order->status === \App\Enums\OrderStatus::SUCCESS)
-                                <span class="label label-primary">{{\App\Enums\OrderStatus::getDescription($order->status)}}</span>
-                            @elseif($order->status === \App\Enums\OrderStatus::FINISH)
-                                <span class="label label-success">{{\App\Enums\OrderStatus::getDescription($order->status)}}</span>
-                            @else
-                                {{$order->status}}
-                            @endif
-                        </td>
+                        <td>@orderLabel($order->status)</td>
                     </tr>
                 @endforeach
             </table>
